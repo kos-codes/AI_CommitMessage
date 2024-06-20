@@ -66,8 +66,8 @@ function generateCommitMessageChatCompletionPrompt(
   return chatContextAsCompletionRequest;
 }
 
-const defaultModel = "gpt-3.5-turbo-16k";
-const defaultTemperature = 0.2;
+const defaultModel = "gpt-4o";
+const defaultTemperature = 0.8;
 const defaultMaxTokens = 196;
 
 export class ChatgptMsgGenerator implements MsgGenerator {
