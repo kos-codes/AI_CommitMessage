@@ -110,30 +110,6 @@ export async function generateAiCommitCommand() {
       messageGenerator,
       diffProvider,
       commitMessageWriter,
-      async (message) => {
-        switch (configuration.general.messageApproveMethod) {
-          case "Quick pick":
-            const quickPickResult = await vscode.window.showQuickPick(
-              ["Yes", "No"],
-              {
-                title: `Use this commit message?: ${message}`,
-              }
-            );
-
-            return {
-              result: quickPickResult === "Yes",
-              edited: false,
-            };
-          case "Message file":
-            const openFileResult = await openTempFileWithMessage(message);
-            return openFileResult;
-          default:
-            return {
-              result: true,
-              edited: false,
-            };
-        }
-      }
     );
 
     const delimeter = configuration.appearance.delimeter;

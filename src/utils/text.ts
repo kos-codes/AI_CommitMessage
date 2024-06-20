@@ -9,6 +9,7 @@ export function trimNewLines(str: string, delimeter?: string) {
   let formattedStrings = stringParts.map((part) => part.trimStart());
 
   if (delimeter) {
+    console.log("delimeter", delimeter);
     formattedStrings = formattedStrings.map((str) => `${delimeter} ${str}`);
   }
 
@@ -18,7 +19,8 @@ export function trimNewLines(str: string, delimeter?: string) {
 export function isValidApiKey() {
   const configuration = getConfiguration();
   return (
-    configuration.openAI.apiKey != null &&
-    configuration.openAI.apiKey.trim().length > 0
-  );
+      configuration.openAI.apiKey !== null &&
+      configuration.openAI.apiKey !== undefined &&
+      configuration.openAI.apiKey.trim().length > 0
+    );
 }

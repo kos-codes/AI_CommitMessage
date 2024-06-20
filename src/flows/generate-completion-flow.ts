@@ -9,18 +9,12 @@ type GenerateCompletionFlowProps = {
 };
 
 export class GenerateCompletionFlow
-  implements Flow<GenerateCompletionFlowProps>
-{
+  implements Flow<GenerateCompletionFlowProps> {
   constructor(
     private readonly msgGenerator: MsgGenerator,
     private readonly diffProvider: DiffProvider,
     private readonly commitMessageWriter: CommitMessageWriter,
-    private readonly onSelectMessage: (message: string) => Promise<{
-      result: boolean;
-      edited: boolean;
-      editedMessage?: string;
-    }>
-  ) {}
+  ) { }
 
   activate(): Promise<void> {
     throw new Error("Method not implemented.");
@@ -44,18 +38,6 @@ export class GenerateCompletionFlow
       throw new Error("No commit message were generated. Try again.");
     }
 
-    const { result, edited, editedMessage } = await this.onSelectMessage(
-      commitMessage
-    );
-
-    if (!result) {
-      throw new Error("User rejected commit message.");
-    }
-
-    if (edited && editedMessage != null && editedMessage.trim() !== "") {
-      await this.commitMessageWriter.write(editedMessage);
-    } else {
-      await this.commitMessageWriter.write(commitMessage);
-    }
+    await this.commitMessageWriter.write(commitMessage);
   }
 }
