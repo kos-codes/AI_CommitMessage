@@ -3,26 +3,21 @@
  * licensed under the MIT License. Copyright (c) Dima Sukharev.
  * The original code can be found at https://github.com/di-sukharev/opencommit/blob/master/src/generateCommitMessageFromGitDiff.ts.
  */
-
-import {
-  ChatCompletionRequestMessage,
-  ChatCompletionRequestMessageRoleEnum,
-  Configuration,
-  OpenAIApi,
-} from "openai";
+import OpenAI from "openai";
 
 import { trimNewLines } from "@utils/text";
 import { Configuration as AppConfiguration } from "@utils/configuration";
 
 import { MsgGenerator } from "./msg-generator";
+import { ChatCompletionMessageParam } from "openai/resources";
 
-const initMessagesPrompt: Array<ChatCompletionRequestMessage> = [
+const initMessagesPrompt: ChatCompletionMessageParam[] = [
   {
-    role: ChatCompletionRequestMessageRoleEnum.System,
-    content: `You are to act as the author of a commit message in git. Your mission is to create clean and comprehensive commit messages in the conventional commit convention. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. Don't add any descriptions to the commit, only commit message. Use english language to answer.`,
+    role: 'system',
+    content: `You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the airbnb commitlint rules. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. Don't add any descriptions to the commit, only commit message. Use english language to answer.`,
   },
   {
-    role: ChatCompletionRequestMessageRoleEnum.User,
+    role: 'user',
     content: `diff --git a/src/server.ts b/src/server.ts
     index ad4db42..f3b18a9 100644
     --- a/src/server.ts
@@ -47,7 +42,7 @@ const initMessagesPrompt: Array<ChatCompletionRequestMessage> = [
       });`,
   },
   {
-    role: ChatCompletionRequestMessageRoleEnum.Assistant,
+    role: 'assistant',
     content: `fix(server.ts): change port variable case from lowercase port to uppercase PORT
         feat(server.ts): add support for process.env.PORT environment variable`,
   },
@@ -55,11 +50,11 @@ const initMessagesPrompt: Array<ChatCompletionRequestMessage> = [
 
 function generateCommitMessageChatCompletionPrompt(
   diff: string
-): Array<ChatCompletionRequestMessage> {
+): ChatCompletionMessageParam[] {
   const chatContextAsCompletionRequest = [...initMessagesPrompt];
 
   chatContextAsCompletionRequest.push({
-    role: ChatCompletionRequestMessageRoleEnum.User,
+    role: 'user',
     content: diff,
   });
 
@@ -71,26 +66,26 @@ const defaultTemperature = 0.8;
 const defaultMaxTokens = 196;
 
 export class ChatgptMsgGenerator implements MsgGenerator {
-  openAI: OpenAIApi;
+  openAI: OpenAI;
   config?: AppConfiguration["openAI"];
 
   constructor(config: AppConfiguration["openAI"]) {
-    this.openAI = new OpenAIApi(
-      new Configuration({
-        apiKey: config.apiKey,
-      }),
-      config.customEndpoint?.trim() || undefined
-    );
+    this.openAI = new OpenAI(
+      {
+        baseURL: config.customEndpoint?.trim() || undefined,
+        apiKey: config.apiKey
+      });
     this.config = config;
   }
 
   async generate(diff: string, delimeter?: string) {
     const messages = generateCommitMessageChatCompletionPrompt(diff);
-    const { data } = await this.openAI.createChatCompletion({
+    const data = await this.openAI.chat.completions.create({
       model: this.config?.gptVersion || defaultModel,
       messages: messages,
       temperature: this.config?.temperature || defaultTemperature,
-      ["max_tokens"]: this.config?.maxTokens || defaultMaxTokens,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      max_tokens: this.config?.maxTokens || defaultMaxTokens,
     });
 
     const message = data?.choices[0].message;
