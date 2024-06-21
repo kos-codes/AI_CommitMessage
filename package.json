@@ -110,7 +110,7 @@
         "gptcommit.openAI.customEndpoint": {
           "type": "string",
           "default": "https://api.perplexity.ai",
-          "description": "Custom endpoint URL for OpenAI API"
+          "description": "Custom endpoint URL for OpenAI API. empty for default. or https://api.perplexity.ai" 
         },
         "gptcommit.openAI.temperature": {
           "type": "number",
