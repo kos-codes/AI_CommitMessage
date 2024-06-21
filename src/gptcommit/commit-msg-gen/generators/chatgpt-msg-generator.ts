@@ -10,6 +10,7 @@ import { Configuration as AppConfiguration } from "@utils/configuration";
 
 import { MsgGenerator } from "./msg-generator";
 import { ChatCompletionMessageParam } from "openai/resources";
+import { logToOutputChannel } from "@utils/output";
 
 const initMessagesPrompt: ChatCompletionMessageParam[] = [
   {
@@ -90,6 +91,12 @@ export class ChatgptMsgGenerator implements MsgGenerator {
 
     const message = data?.choices[0].message;
     const commitMessage = message?.content;
+
+    logToOutputChannel("[customEndpoint] ", this.config?.customEndpoint);
+    logToOutputChannel("[model]", this.config?.gptVersion);
+    logToOutputChannel("[Data_completion_tokens]", data.usage?.completion_tokens.toFixed(0));
+    logToOutputChannel("[Data_prompt_tokens]", data.usage?.prompt_tokens.toFixed(0));
+    logToOutputChannel("[Data_total_tokens]", data.usage?.total_tokens.toFixed(0));
 
     if (!commitMessage) {
       throw new Error("No commit message were generated. Try again.");
