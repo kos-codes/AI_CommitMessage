@@ -32,7 +32,14 @@ const configurationSchema = z.object({
         "gpt-4-1106-preview",
         "gpt-3.5-turbo-0125",
         "gpt-3.5-turbo",
-        "gpt-3.5-turbo-1106"
+        "gpt-3.5-turbo-1106",
+        "llama-3-sonar-small-32k-chat",
+        "llama-3-sonar-small-32k-online",
+        "llama-3-sonar-large-32k-chat",
+        "llama-3-sonar-large-32k-online",
+        "llama-3-8b-instruct",
+        "llama-3-70b-instruct",
+        "mixtral-8x7b-instruct"
       ])
       .default("gpt-4o")
       .catch("gpt-4o")
