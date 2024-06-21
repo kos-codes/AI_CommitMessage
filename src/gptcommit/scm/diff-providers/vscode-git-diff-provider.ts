@@ -11,6 +11,10 @@ export class VscodeGitDiffProvider implements DiffProvider {
   constructor(gitExtension: vscode.Extension<GitExtension>) {
     this.repository = getRepositoryFromGitExtension(gitExtension);
   }
+  async getDiff(excludeFiles?: string[]): Promise<string> {
+    const diff = await this.repository.diff();
+    return diff;
+  }
 
   async getStagedDiff(excludeFiles?: string[]) {
     const diff = await this.repository.diff(true);

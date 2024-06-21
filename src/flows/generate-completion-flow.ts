@@ -21,12 +21,14 @@ export class GenerateCompletionFlow
   }
 
   async run(props: GenerateCompletionFlowProps): Promise<void> {
-    const diff = await this.diffProvider.getStagedDiff();
+    let diff = await this.diffProvider.getStagedDiff();
 
     if (!diff || diff.trim() === "") {
-      throw new Error(
-        "No staged changes found. Make sure to stage your changes with `git add`."
-      );
+      diff = await this.diffProvider.getDiff();
+    }
+    
+    if (!diff || diff.trim() === "") {
+      throw new Error("No diff found. Try again.");
     }
 
     const commitMessage = await this.msgGenerator.generate(
