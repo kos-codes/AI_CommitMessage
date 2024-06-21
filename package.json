@@ -104,17 +104,17 @@
             "llama-3-70b-instruct",
             "mixtral-8x7b-instruct"
           ],
-          "default": "llama-3-sonar-large-32k-chat",
+          "default": "gpt-4o",
           "description": "Version of GPT used by OpenAI or perplexity.ai"
         },
         "gptcommit.openAI.customEndpoint": {
           "type": "string",
-          "default": "https://api.perplexity.ai",
+          "default": "",
           "description": "Custom endpoint URL for OpenAI API. empty for default. or https://api.perplexity.ai" 
         },
         "gptcommit.openAI.temperature": {
           "type": "number",
-          "default": 0.8,
+          "default": 0.6,
           "description": "Controls randomness. Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive"
         },
         "gptcommit.openAI.maxTokens": {
