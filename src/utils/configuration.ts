@@ -3,6 +3,29 @@ import * as vscode from "vscode";
 
 import { DeepKey } from "./types";
 
+const gptVersionsOpenAI = z.enum([
+  "gpt-4o",
+  "gpt-4o-2024-05-13",
+  "gpt-4-turbo",
+  "gpt-4-turbo-2024-04-09",
+  "gpt-4-turbo-preview",
+  "gpt-4-0125-preview",
+  "gpt-4-1106-preview",
+  "gpt-3.5-turbo-0125",
+  "gpt-3.5-turbo",
+  "gpt-3.5-turbo-1106"
+]);
+
+const gptVersionsPerplexity = z.enum([
+  "llama-3-sonar-small-32k-chat",
+  "llama-3-sonar-small-32k-online",
+  "llama-3-sonar-large-32k-chat",
+  "llama-3-sonar-large-32k-online",
+  "llama-3-8b-instruct",
+  "llama-3-70b-instruct",
+  "mixtral-8x7b-instruct"
+]);
+
 const configurationSchema = z.object({
   appearance: z.object({
     delimeter: z.string().optional(),
@@ -21,37 +44,27 @@ const configurationSchema = z.object({
   }),
   openAI: z.object({
     apiKey: z.string().optional(),
-    gptVersion: z
-      .enum([
-        "gpt-4o",
-        "gpt-4o-2024-05-13",
-        "gpt-4-turbo",
-        "gpt-4-turbo-2024-04-09",
-        "gpt-4-turbo-preview",
-        "gpt-4-0125-preview",
-        "gpt-4-1106-preview",
-        "gpt-3.5-turbo-0125",
-        "gpt-3.5-turbo",
-        "gpt-3.5-turbo-1106",
-        "llama-3-sonar-small-32k-chat",
-        "llama-3-sonar-small-32k-online",
-        "llama-3-sonar-large-32k-chat",
-        "llama-3-sonar-large-32k-online",
-        "llama-3-8b-instruct",
-        "llama-3-70b-instruct",
-        "mixtral-8x7b-instruct"
-      ])
-      .default("gpt-4o")
-      .catch("gpt-4o")
-      .optional(),
     customEndpoint: z.union([
       z.literal("openai"),
       z.literal("perplexity"),
       z.string().regex(/^http/)
     ])
-    .default("openai")
-    .catch("openai")
-    .optional(),
+      .default("openai")
+      .catch("openai")
+      .optional(),
+    gptVersion: z.string()
+      .refine((version: string) => {
+        const customEndpoint: string | undefined = vscode.workspace
+          .getConfiguration("gptcommit")
+          .get("openAI.customEndpoint"); // 소문자로 변환하여 대소문자 무시
+        const validVersions = customEndpoint?.toLowerCase() === "perplexity" ?
+          gptVersionsPerplexity : gptVersionsOpenAI;
+        return validVersions.safeParse(version).success;
+      }, {
+        message: "Invalid GPT version for the specified endpoint"
+      })
+      .default("gpt-4o")
+      .catch("gpt-4o"),
     temperature: z.number().optional(),
     maxTokens: z.number().optional(),
   }),
