@@ -64,6 +64,10 @@ function generateCommitMessageChatCompletionPrompt(
 
   if (language !== 'English') {
     chatContextAsCompletionRequest.push({
+      role: 'assistant',
+      content: `Please request the language you would like to use when responding.`,
+    });
+    chatContextAsCompletionRequest.push({
       role: 'user',
       content: `Translate to ${language}.`
     });
