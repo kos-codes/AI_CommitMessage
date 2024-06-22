@@ -44,7 +44,14 @@ const configurationSchema = z.object({
       .default("gpt-4o")
       .catch("gpt-4o")
       .optional(),
-    customEndpoint: z.string().optional(),
+    customEndpoint: z.union([
+      z.literal("openai"),
+      z.literal("perplexity"),
+      z.string().regex(/^http/)
+    ])
+    .default("openai")
+    .catch("openai")
+    .optional(),
     temperature: z.number().optional(),
     maxTokens: z.number().optional(),
   }),

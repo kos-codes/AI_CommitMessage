@@ -109,8 +109,8 @@
         },
         "gptcommit.openAI.customEndpoint": {
           "type": "string",
-          "default": "",
-          "description": "Custom endpoint URL for OpenAI API. empty for default. or https://api.perplexity.ai" 
+          "default": "openai",
+          "description": "Enter \"openai\" or \"perplexity\" or enter a custom endpoint URL." 
         },
         "gptcommit.openAI.temperature": {
           "type": "number",
@@ -131,8 +131,8 @@
     "build": "npm run esbuild-base -- --sourcemap",
     "watch": "npm run esbuild-base -- --sourcemap --watch",
     "lint": "eslint src --ext ts",
-    "package": "vsce package -o packages",
-    "package:publish": "vsce publish"
+    "package": "vsce package --no-yarn",
+    "package:publish": "vsce publish --no-yarn"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

@@ -32,7 +32,7 @@ GPT Commit extension contributes the following settings:
 
 - `gptcommit.openAI.apiKey`: OpenAI API Key. Needed for generating AI commit messages
 - `gptcommit.openAI.gptVersion`: Version of GPT used by OpenAI
-- `gptcommit.openAI.customEndpoint`: Custom endpoint URL for OpenAI API
+- `gptcommit.openAI.customEndpoint`: Enter "openai" or "perplexity" or enter a custom endpoint URL.
 - `gptcommit.openAI.temperature`: Controls randomness. Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive
 - `gptcommit.openAI.maxTokens`: The maximum number of tokens to generate. Requests can use up to 2048 tokens shared between prompt and completion
 
