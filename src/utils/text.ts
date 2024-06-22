@@ -18,9 +18,16 @@ export function trimNewLines(str: string, delimeter?: string) {
 
 export function isValidApiKey() {
   const configuration = getConfiguration();
+  const apiKey = configuration.openAI.apiKey ?? "";
+  const customEndpoint = configuration.openAI.customEndpoint?.toLowerCase();
+
+  const isValidPrefix = customEndpoint === "perplexity" ?
+    apiKey.startsWith("pplx-") : apiKey.startsWith("sk-");
+
   return (
-      configuration.openAI.apiKey !== null &&
-      configuration.openAI.apiKey !== undefined &&
-      configuration.openAI.apiKey.trim().length > 0
-    );
+    apiKey !== null &&
+    apiKey !== undefined &&
+    apiKey.trim().length > 0 &&
+    isValidPrefix
+  );
 }
