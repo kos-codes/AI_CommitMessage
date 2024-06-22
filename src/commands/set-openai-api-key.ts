@@ -9,22 +9,41 @@ export async function setOpenaiApiKey() {
 
   let customEndpoint: string | undefined;
   do {
-    customEndpoint = await vscode.window.showInputBox({
-      prompt: "Enter your Custom Endpoint for OpenAI (e.g., 'openai', 'perplexity', or an HTTP URL)",
-      ignoreFocusOut: true,
-      placeHolder: "openai, perplexity, or http://your-custom-api.com"
-    });
+    const customEndpoints = [
+      "openai",
+      "perplexity",
+      "HTTP URL",
+    ];
+    let selectedEndpoint = await vscode.window.showQuickPick(
+      customEndpoints,
+      {
+        placeHolder: 'Select the Endpoint for AI.',
+        ignoreFocusOut: true
+      }
+    );
 
-    if (customEndpoint === undefined) {
+    if (selectedEndpoint === undefined) {
       logToOutputChannel("User cancelled the operation.");
       vscode.window.showInformationMessage("Operation cancelled.");
       return;
     }
 
-    if (!customEndpoint || trimNewLines(customEndpoint).length === 0) {
-      vscode.window.showErrorMessage("Custom Endpoint is required. Please enter a valid endpoint or press ESC to cancel.");
+    if (selectedEndpoint === "HTTP URL") {
+      customEndpoint = await vscode.window.showInputBox({
+        prompt: "Enter your Custom HTTP URL for OpenAI",
+        ignoreFocusOut: true,
+        placeHolder: "http://your-custom-api.com"
+      });
+
+      if (!customEndpoint || trimNewLines(customEndpoint).length === 0 || !customEndpoint.startsWith("http")) {
+        vscode.window.showErrorMessage("Valid HTTP URL is required. Please enter a valid URL or press ESC to cancel.");
+        customEndpoint = undefined;
+      }
+    } else {
+      customEndpoint = selectedEndpoint;
     }
-  } while (!customEndpoint || trimNewLines(customEndpoint).length === 0);
+
+  } while (!customEndpoint);
 
   let gptVersion: string | undefined;
   do {
