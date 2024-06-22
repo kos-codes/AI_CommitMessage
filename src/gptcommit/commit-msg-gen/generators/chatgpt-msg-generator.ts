@@ -12,14 +12,15 @@ import { MsgGenerator } from "./msg-generator";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { logToOutputChannel } from "@utils/output";
 
-const initMessagesPrompt: ChatCompletionMessageParam[] = [
-  {
-    role: 'system',
-    content: `You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the airbnb commitlint rules. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. Don't add any descriptions to the commit, only commit message. Use english language to answer.`,
-  },
-  {
-    role: 'user',
-    content: `diff --git a/src/server.ts b/src/server.ts
+function createInitMessagesPrompt(language: string): ChatCompletionMessageParam[] {
+  return [
+    {
+      role: 'system',
+      content: `From now on, you must answer only in ${language}. You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the airbnb commitlint rules. I'll send you an output of 'git diff' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. You should never add a description to a commit, only commit message.`,
+    },
+    {
+      role: 'user',
+      content: `diff --git a/src/server.ts b/src/server.ts
     index ad4db42..f3b18a9 100644
     --- a/src/server.ts
     +++ b/src/server.ts
@@ -41,23 +42,32 @@ const initMessagesPrompt: ChatCompletionMessageParam[] = [
     +app.listen(process.env.PORT || PORT, () => {
     +  console.log(\`Server listening on port \${PORT}\`);
       });`,
-  },
-  {
-    role: 'assistant',
-    content: `fix(server.ts): change port variable case from lowercase port to uppercase PORT
+    },
+    {
+      role: 'assistant',
+      content: `fix(server.ts): change port variable case from lowercase port to uppercase PORT
         feat(server.ts): add support for process.env.PORT environment variable`,
-  },
-];
+    },
+  ];
+};
 
 function generateCommitMessageChatCompletionPrompt(
-  diff: string
+  diff: string,
+  language: string
 ): ChatCompletionMessageParam[] {
-  const chatContextAsCompletionRequest = [...initMessagesPrompt];
+  const chatContextAsCompletionRequest = createInitMessagesPrompt(language);
 
   chatContextAsCompletionRequest.push({
     role: 'user',
     content: diff,
   });
+
+  if (language !== 'English') {
+    chatContextAsCompletionRequest.push({
+      role: 'user',
+      content: `Translate to ${language}.`
+    });
+  }
 
   return chatContextAsCompletionRequest;
 }
@@ -92,7 +102,8 @@ export class ChatgptMsgGenerator implements MsgGenerator {
   }
 
   async generate(diff: string, delimeter?: string) {
-    const messages = generateCommitMessageChatCompletionPrompt(diff);
+    const language = this.config?.language || "English";
+    const messages = generateCommitMessageChatCompletionPrompt(diff, language);
     const data = await this.openAI.chat.completions.create({
       model: this.config?.gptVersion || defaultModel,
       messages: messages,
@@ -106,6 +117,7 @@ export class ChatgptMsgGenerator implements MsgGenerator {
 
     logToOutputChannel("[customEndpoint] ", this.config?.customEndpoint);
     logToOutputChannel("[model]", this.config?.gptVersion);
+    logToOutputChannel("[lang]", this.config?.language);
     logToOutputChannel("[Data_completion_tokens]", data.usage?.completion_tokens.toFixed(0));
     logToOutputChannel("[Data_prompt_tokens]", data.usage?.prompt_tokens.toFixed(0));
     logToOutputChannel("[Data_total_tokens]", data.usage?.total_tokens.toFixed(0));
