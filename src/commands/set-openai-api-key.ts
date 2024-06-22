@@ -1,5 +1,5 @@
+// located at : src/commands/set-openai-api-key.ts
 import * as vscode from "vscode";
-
 import { setConfigurationValue } from "@utils/configuration";
 import { isValidApiKey, trimNewLines } from "@utils/text";
 import { logToOutputChannel } from "@utils/output";
@@ -7,7 +7,7 @@ import { logToOutputChannel } from "@utils/output";
 export async function setOpenaiApiKey() {
   logToOutputChannel("Starting setOpenaiApiKey command");
 
-  let customEndpoint: string | undefined = "";
+  let customEndpoint: string | undefined;
   do {
     customEndpoint = await vscode.window.showInputBox({
       prompt: "Enter your Custom Endpoint for OpenAI (e.g., 'openai', 'perplexity', or an HTTP URL)",
@@ -15,16 +15,20 @@ export async function setOpenaiApiKey() {
       placeHolder: "openai, perplexity, or http://your-custom-api.com"
     });
 
+    if (customEndpoint === undefined) {
+      logToOutputChannel("User cancelled the operation.");
+      vscode.window.showInformationMessage("Operation cancelled.");
+      return;
+    }
+
     if (!customEndpoint || trimNewLines(customEndpoint).length === 0) {
       vscode.window.showErrorMessage("Custom Endpoint is required. Please enter a valid endpoint or press ESC to cancel.");
     }
   } while (!customEndpoint || trimNewLines(customEndpoint).length === 0);
 
-  let gptVersion: string | undefined = "";
-
+  let gptVersion: string | undefined;
   do {
-    // GPT Version 선택
-    const gptVersionOptions = customEndpoint === 'perplexity' ? [
+    const gptVersionOptions = customEndpoint.toLowerCase() === 'perplexity' ? [
       "llama-3-sonar-small-32k-chat",
       "llama-3-sonar-small-32k-online",
       "llama-3-sonar-large-32k-chat",
@@ -52,16 +56,32 @@ export async function setOpenaiApiKey() {
         ignoreFocusOut: true
       }
     );
+
+    if (gptVersion === undefined) {
+      logToOutputChannel("User cancelled the operation.");
+      vscode.window.showInformationMessage("Operation cancelled.");
+      return;
+    }
+
+    if (!gptVersion || trimNewLines(gptVersion).length === 0) {
+      vscode.window.showErrorMessage("GPT Version is required. Please select a valid GPT version or press ESC to cancel.");
+    }
   } while (!gptVersion || trimNewLines(gptVersion).length === 0);
 
   const expectedPrefix = customEndpoint.toLowerCase() === "perplexity" ? "pplx-" : "sk-";
-  let apiKey: string | undefined = "";
+  let apiKey: string | undefined;
   do {
     apiKey = await vscode.window.showInputBox({
       prompt: `Enter your OpenAI API Key that matches your endpoint (${customEndpoint}) and GPT version. It should start with '${expectedPrefix}'.`,
       ignoreFocusOut: true,
       placeHolder: `Starts with '${expectedPrefix}' depending on the endpoint`
     });
+
+    if (apiKey === undefined) {
+      logToOutputChannel("User cancelled the operation.");
+      vscode.window.showInformationMessage("Operation cancelled.");
+      return;
+    }
 
     if (!apiKey || trimNewLines(apiKey).length === 0 || !apiKey.startsWith(expectedPrefix)) {
       vscode.window.showErrorMessage(`API Key must start with '${expectedPrefix}'. Please enter a valid API key or press ESC to cancel.`);
