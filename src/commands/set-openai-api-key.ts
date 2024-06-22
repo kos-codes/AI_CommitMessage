@@ -20,20 +20,38 @@ export async function setOpenaiApiKey() {
     }
   } while (!customEndpoint || trimNewLines(customEndpoint).length === 0);
 
-  const isPerplexity = customEndpoint.toLowerCase() === "perplexity";
-  const gptVersionPrompt = isPerplexity ? "Enter 'llama-3-sonar-large-32k-chat' or 'llama-3-sonar-small-32k-chat'" : "Enter 'gpt-4o', 'gpt-4-turbo', or 'gpt-3.5-turbo'";
   let gptVersion: string | undefined = "";
 
   do {
-    gptVersion = await vscode.window.showInputBox({
-      prompt: gptVersionPrompt,
-      ignoreFocusOut: true,
-      placeHolder: isPerplexity ? "llama-3-sonar..." : "gpt-..."
-    });
+    // GPT Version 선택
+    const gptVersionOptions = customEndpoint === 'perplexity' ? [
+      "llama-3-sonar-small-32k-chat",
+      "llama-3-sonar-small-32k-online",
+      "llama-3-sonar-large-32k-chat",
+      "llama-3-sonar-large-32k-online",
+      "llama-3-8b-instruct",
+      "llama-3-70b-instruct",
+      "mixtral-8x7b-instruct"
+    ] : [
+      "gpt-4o",
+      "gpt-4o-2024-05-13",
+      "gpt-4-turbo",
+      "gpt-4-turbo-2024-04-09",
+      "gpt-4-turbo-preview",
+      "gpt-4-0125-preview",
+      "gpt-4-1106-preview",
+      "gpt-3.5-turbo-0125",
+      "gpt-3.5-turbo",
+      "gpt-3.5-turbo-1106",
+    ];
 
-    if (!gptVersion || trimNewLines(gptVersion).length === 0) {
-      vscode.window.showErrorMessage("GPT Version is required. Please enter a valid GPT version or press ESC to cancel.");
-    }
+    gptVersion = await vscode.window.showQuickPick(
+      gptVersionOptions,
+      {
+        placeHolder: 'Select the GPT version.',
+        ignoreFocusOut: true
+      }
+    );
   } while (!gptVersion || trimNewLines(gptVersion).length === 0);
 
   const expectedPrefix = customEndpoint.toLowerCase() === "perplexity" ? "pplx-" : "sk-";
