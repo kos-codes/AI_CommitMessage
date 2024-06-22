@@ -71,11 +71,23 @@ export class ChatgptMsgGenerator implements MsgGenerator {
   config?: AppConfiguration["openAI"];
 
   constructor(config: AppConfiguration["openAI"]) {
-    this.openAI = new OpenAI(
-      {
-        baseURL: config.customEndpoint?.trim() || undefined,
-        apiKey: config.apiKey
-      });
+    let baseURL: string | undefined;
+    if (config.customEndpoint) {
+      const endpoint = config.customEndpoint.toLowerCase().trim();
+      if (endpoint === "perplexity") {
+        baseURL = "https://api.perplexity.ai";
+      } else if (endpoint.startsWith("http")) {
+        baseURL = endpoint;
+      } else {
+        baseURL = undefined;
+      }
+    }
+
+    this.openAI = new OpenAI({
+      baseURL: baseURL,
+      apiKey: config.apiKey
+    });
+
     this.config = config;
   }
 
