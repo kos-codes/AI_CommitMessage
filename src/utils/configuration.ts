@@ -68,6 +68,22 @@ const configurationSchema = z.object({
       .catch("gpt-4o"),
     temperature: z.number().optional(),
     maxTokens: z.number().optional(),
+    language: z.enum([
+      "English",
+      "Korean",
+      "Japanese",
+      "Chinese",
+      "Spanish",
+      "Arabic",
+      "Portuguese",
+      "Russian",
+      "French",
+      "German",
+      "Italian"
+    ])
+    .default("English")
+    .catch("English")
+    .optional(),
   }),
 });
 

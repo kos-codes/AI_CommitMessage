@@ -8,12 +8,12 @@ export async function setOpenaiApiKey() {
   logToOutputChannel("Starting setOpenaiApiKey command");
 
   let customEndpoint: string | undefined;
+  const customEndpoints = [
+    "openai",
+    "perplexity",
+    "HTTP URL",
+  ];
   do {
-    const customEndpoints = [
-      "openai",
-      "perplexity",
-      "HTTP URL",
-    ];
     let selectedEndpoint = await vscode.window.showQuickPick(
       customEndpoints,
       {
@@ -46,27 +46,28 @@ export async function setOpenaiApiKey() {
   } while (!customEndpoint);
 
   let gptVersion: string | undefined;
+  const gptVersionOptions = customEndpoint.toLowerCase() === 'perplexity' ? [
+    "llama-3-sonar-small-32k-chat",
+    "llama-3-sonar-small-32k-online",
+    "llama-3-sonar-large-32k-chat",
+    "llama-3-sonar-large-32k-online",
+    "llama-3-8b-instruct",
+    "llama-3-70b-instruct",
+    "mixtral-8x7b-instruct"
+  ] : [
+    "gpt-4o",
+    "gpt-4o-2024-05-13",
+    "gpt-4-turbo",
+    "gpt-4-turbo-2024-04-09",
+    "gpt-4-turbo-preview",
+    "gpt-4-0125-preview",
+    "gpt-4-1106-preview",
+    "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo",
+    "gpt-3.5-turbo-1106",
+  ];
+
   do {
-    const gptVersionOptions = customEndpoint.toLowerCase() === 'perplexity' ? [
-      "llama-3-sonar-small-32k-chat",
-      "llama-3-sonar-small-32k-online",
-      "llama-3-sonar-large-32k-chat",
-      "llama-3-sonar-large-32k-online",
-      "llama-3-8b-instruct",
-      "llama-3-70b-instruct",
-      "mixtral-8x7b-instruct"
-    ] : [
-      "gpt-4o",
-      "gpt-4o-2024-05-13",
-      "gpt-4-turbo",
-      "gpt-4-turbo-2024-04-09",
-      "gpt-4-turbo-preview",
-      "gpt-4-0125-preview",
-      "gpt-4-1106-preview",
-      "gpt-3.5-turbo-0125",
-      "gpt-3.5-turbo",
-      "gpt-3.5-turbo-1106",
-    ];
 
     gptVersion = await vscode.window.showQuickPick(
       gptVersionOptions,
@@ -87,8 +88,8 @@ export async function setOpenaiApiKey() {
     }
   } while (!gptVersion || trimNewLines(gptVersion).length === 0);
 
-  const expectedPrefix = customEndpoint.toLowerCase() === "perplexity" ? "pplx-" : "sk-";
   let apiKey: string | undefined;
+  const expectedPrefix = customEndpoint.toLowerCase() === "perplexity" ? "pplx-" : "sk-";
   do {
     apiKey = await vscode.window.showInputBox({
       prompt: `Enter your OpenAI API Key that matches your endpoint (${customEndpoint}) and GPT version. It should start with '${expectedPrefix}'.`,
@@ -107,9 +108,44 @@ export async function setOpenaiApiKey() {
     }
   } while (!apiKey || trimNewLines(apiKey).length === 0 || !apiKey.startsWith(expectedPrefix));
 
+  let language: string | undefined;
+  const languageOptions = [
+    "English",
+    "Korean",
+    "Japanese",
+    "Chinese",
+    "Spanish",
+    "Arabic",
+    "Portuguese",
+    "Russian",
+    "French",
+    "German",
+    "Italian"
+  ];
+  do {
+    language = await vscode.window.showQuickPick(
+      languageOptions,
+      {
+        placeHolder: 'English, Korean, Japanese, etc.',
+        ignoreFocusOut: true
+      }
+    );
+
+    if (language === undefined) {
+      logToOutputChannel("User cancelled the operation.");
+      vscode.window.showInformationMessage("Operation cancelled.");
+      return;
+    }
+
+    if (!language || trimNewLines(language).length === 0) {
+      vscode.window.showErrorMessage("language is required. Please select a valid language or press ESC to cancel.");
+    }
+  } while (!language || trimNewLines(language).length === 0);
+
   await setConfigurationValue("openAI.customEndpoint", customEndpoint);
   await setConfigurationValue("openAI.gptVersion", gptVersion);
   await setConfigurationValue("openAI.apiKey", apiKey);
+  await setConfigurationValue("openAI.language", language);
 
   logToOutputChannel("OpenAI configuration updated successfully.");
   vscode.window.showInformationMessage("OpenAI API Key and configuration saved successfully.");
