@@ -1,3 +1,4 @@
+// located at : src/utils/text.ts
 import { getConfiguration } from "./configuration";
 
 export function trimNewLines(str: string, delimeter?: string) {

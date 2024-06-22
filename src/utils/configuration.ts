@@ -1,3 +1,4 @@
+// located at : src/utils/configuration.ts
 import { z } from "zod";
 import * as vscode from "vscode";
 
