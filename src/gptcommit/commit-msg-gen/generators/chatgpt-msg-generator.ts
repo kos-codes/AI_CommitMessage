@@ -16,7 +16,7 @@ function createInitMessagesPrompt(language: string): ChatCompletionMessageParam[
   return [
     {
       role: 'system',
-      content: `From now on, you must answer only in ${language}. You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the airbnb commitlint rules. I'll send you an output of 'git diff' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. You should never add a description to a commit, only commit message.`,
+      content: `From now on, you must answer only in ${language}. You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the Conventional Commits 1.0.0 rules. I'll send you an output of 'git diff' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. You should never add a description to a commit, only commit message.`,
     },
     {
       role: 'user',
@@ -45,8 +45,8 @@ function createInitMessagesPrompt(language: string): ChatCompletionMessageParam[
     },
     {
       role: 'assistant',
-      content: `fix(server.ts): change port variable case from lowercase port to uppercase PORT
-        feat(server.ts): add support for process.env.PORT environment variable`,
+      content: `fix(server): use environment variable for port configuration
+        refactor(server): rename port constant and use environment variable for port configuration`,
     },
   ];
 };
