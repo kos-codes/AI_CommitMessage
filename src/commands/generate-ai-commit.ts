@@ -97,10 +97,6 @@ export async function generateAiCommitCommand() {
       await vscode.commands.executeCommand("gptcommit.setOpenAIApiKey");
     }
 
-    if (!isValidApiKey()) {
-      throw new Error("You should set OpenAi API Key before using extension!");
-    }
-
     const configuration = getConfiguration();
     const commitMessageWriter = new GitCommitMessageWriter(gitExtension);
     const messageGenerator = new ChatgptMsgGenerator(configuration.openAI);
@@ -137,6 +133,8 @@ export async function generateAiCommitCommand() {
       }
     );
   } catch (error: any) {
+    // logToOutputChannel("OpenAI API error", error);
+
     if (error.isAxiosError && error.response?.data?.error?.message) {
       logToOutputChannel(
         `OpenAI API error: ${error.response.data.error.message}`
@@ -144,12 +142,22 @@ export async function generateAiCommitCommand() {
       vscode.window.showErrorMessage(
         `OpenAI API error: ${error.response.data.error.message}`
       );
-      return;
     }
 
     if (error instanceof Error) {
       logToOutputChannel(`Error: ${error.message}`);
       vscode.window.showErrorMessage(error.message);
+
+      if (error.message.includes("Incorrect API key provided")) {
+        logToOutputChannel(
+          "Your OpenAI API key is invalid. Please set a valid API key."
+        );
+        vscode.window.showErrorMessage(
+          "Your OpenAI API key is invalid. Please set a valid API key."
+        );
+        await vscode.commands.executeCommand("gptcommit.setOpenAIApiKey");
+      }
+
       return;
     }
 

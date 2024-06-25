@@ -16,37 +16,7 @@ function createInitMessagesPrompt(language: string): ChatCompletionMessageParam[
   return [
     {
       role: 'system',
-      content: `From now on, you must answer only in ${language}. You are to act as the author of a commit message in git. Your job is to create clean and comprehensive commit messages according to the Conventional Commits 1.0.0 rules. I'll send you an output of 'git diff' command, and you convert it into a commit message. Do not preface the commit with anything, use the present tense. You should never add a description to a commit, only commit message.`,
-    },
-    {
-      role: 'user',
-      content: `diff --git a/src/server.ts b/src/server.ts
-    index ad4db42..f3b18a9 100644
-    --- a/src/server.ts
-    +++ b/src/server.ts
-    @@ -10,7 +10,7 @@ import {
-      initWinstonLogger();
-      
-      const app = express();
-    -const port = 7799;
-    +const PORT = 7799;
-      
-      app.use(express.json());
-      
-    @@ -34,6 +34,6 @@ app.use((_, res, next) => {
-      // ROUTES
-      app.use(PROTECTED_ROUTER_URL, protectedRouter);
-      
-    -app.listen(port, () => {
-    -  console.log(\`Server listening on port \${port}\`);
-    +app.listen(process.env.PORT || PORT, () => {
-    +  console.log(\`Server listening on port \${PORT}\`);
-      });`,
-    },
-    {
-      role: 'assistant',
-      content: `fix(server): use environment variable for port configuration
-        refactor(server): rename port constant and use environment variable for port configuration`,
+      content: `You are to act as the author of a commit message in git. Your task is to generate commit messages according to Conventional Commits 1.0.0 rules. I'll send you the outputs of the 'git diff' command, and you convert it into the one commit message. Do not prefix the commit with anything and use the present tense. You should never add a description to a commit, only commit message.`,
     },
   ];
 };
