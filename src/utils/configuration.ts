@@ -56,7 +56,7 @@ const configurationSchema = z.object({
     gptVersion: z.string()
       .refine((version: string) => {
         const customEndpoint: string | undefined = vscode.workspace
-          .getConfiguration("gptcommit")
+          .getConfiguration("aicommitmessage")
           .get("openAI.customEndpoint"); // 소문자로 변환하여 대소문자 무시
         const validVersions = customEndpoint?.toLowerCase() === "perplexity" ?
           gptVersionsPerplexity : gptVersionsOpenAI;
@@ -93,11 +93,11 @@ export async function setConfigurationValue(
   key: DeepKey<Configuration>,
   value: any
 ) {
-  const configuration = vscode.workspace.getConfiguration("gptcommit");
+  const configuration = vscode.workspace.getConfiguration("aicommitmessage");
   await configuration.update(key, value, vscode.ConfigurationTarget.Global);
 }
 
 export function getConfiguration() {
-  const configuration = vscode.workspace.getConfiguration("gptcommit");
+  const configuration = vscode.workspace.getConfiguration("aicommitmessage");
   return configurationSchema.parse(configuration);
 }

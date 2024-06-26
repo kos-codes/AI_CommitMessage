@@ -2,7 +2,7 @@
   "name": "ai-commit-message",
   "displayName": "Ai Commit Message",
   "description": "VS Code extension which helps to generate AI commit messages using ChatGPT",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "homepage": "https://github.com/ComBba/AI_CommitMessage#readme",
   "bugs": "https://github.com/ComBba/AI_CommitMessage/issues",
   "repository": {
@@ -32,7 +32,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "gptcommit.generateAICommit",
+        "command": "aicommitmessage.generateAICommit",
         "title": "Generate AI commit",
         "icon": {
           "dark": "assets/icons/commit-dark.svg",
@@ -40,14 +40,14 @@
         }
       },
       {
-        "command": "gptcommit.setOpenAIApiKey",
+        "command": "aicommitmessage.setOpenAIApiKey",
         "title": "Set OpenAI API key"
       }
     ],
     "menus": {
       "scm/title": [
         {
-          "command": "gptcommit.generateAICommit",
+          "command": "aicommitmessage.generateAICommit",
           "when": "scmProvider == git",
           "group": "navigation"
         }
@@ -56,12 +56,12 @@
     "configuration": {
       "title": "GPT Commit",
       "properties": {
-        "gptcommit.appearance.delimeter": {
+        "aicommitmessage.appearance.delimeter": {
           "type": "string",
           "default": "",
           "description": "Delimeter between commit lines"
         },
-        "gptcommit.general.generator": {
+        "aicommitmessage.general.generator": {
           "type": "string",
           "enum": [
             "ChatGPT"
@@ -69,7 +69,7 @@
           "default": "ChatGPT",
           "description": "Generator used to create commit messages"
         },
-        "gptcommit.general.messageApproveMethod": {
+        "aicommitmessage.general.messageApproveMethod": {
           "type": "string",
           "enum": [
             "Quick pick",
@@ -78,12 +78,12 @@
           "default": "Quick pick",
           "description": "Method used to approve generated commit messages"
         },
-        "gptcommit.openAI.apiKey": {
+        "aicommitmessage.openAI.apiKey": {
           "type": "string",
           "default": "",
           "description": "Needed for generating AI commit messages"
         },
-        "gptcommit.openAI.gptVersion": {
+        "aicommitmessage.openAI.gptVersion": {
           "type": "string",
           "enum": [
             "gpt-4o",
@@ -107,22 +107,22 @@
           "default": "gpt-4o",
           "description": "Version of GPT used by OpenAI or perplexity.ai"
         },
-        "gptcommit.openAI.customEndpoint": {
+        "aicommitmessage.openAI.customEndpoint": {
           "type": "string",
           "default": "openai",
           "description": "Enter \"openai\" or \"perplexity\" or enter a custom endpoint URL."
         },
-        "gptcommit.openAI.temperature": {
+        "aicommitmessage.openAI.temperature": {
           "type": "number",
           "default": 0.6,
           "description": "Controls randomness. Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive"
         },
-        "gptcommit.openAI.maxTokens": {
+        "aicommitmessage.openAI.maxTokens": {
           "type": "number",
           "default": 196,
           "description": "The maximum number of tokens to generate. Requests can use up to 2048 tokens shared between prompt and completion"
         },
-        "gptcommit.openAI.language": {
+        "aicommitmessage.openAI.language": {
           "type": "string",
           "enum": [
             "English",

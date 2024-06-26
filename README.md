@@ -27,19 +27,19 @@ AI Commit Message offers a range of settings to customize your experience:
 
 ### Appearance 🎭
 
-- `gptcommit.appearance.delimeter`: Delimiter between commit lines.
+- `aicommitmessage.appearance.delimeter`: Delimiter between commit lines.
 
 ### General 🌐
 
-- `gptcommit.general.generator`: Generator used to create commit messages. Available options: ChatGPT.
-- `gptcommit.general.messageApproveMethod`: Method used to approve generated commit messages. Available options: Quick pick, Message file.
+- `aicommitmessage.general.generator`: Generator used to create commit messages. Available options: ChatGPT.
+- `aicommitmessage.general.messageApproveMethod`: Method used to approve generated commit messages. Available options: Quick pick, Message file.
 
-- `gptcommit.openAI.apiKey`: OpenAI API Key. Needed for generating AI commit messages
-- `gptcommit.openAI.gptVersion`: Version of GPT used by OpenAI
-- `gptcommit.openAI.customEndpoint`: Enter "openai" or "perplexity" or enter a custom endpoint URL.
-- `gptcommit.openAI.temperature`: Controls randomness. Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive
-- `gptcommit.openAI.maxTokens`: The maximum number of tokens to generate. Requests can use up to 2048 tokens shared between prompt and completion
-- `gptcommit.openAI.language`: The language of the prompt. The default language is English (en).
+- `aicommitmessage.openAI.apiKey`: OpenAI API Key. Needed for generating AI commit messages
+- `aicommitmessage.openAI.gptVersion`: Version of GPT used by OpenAI
+- `aicommitmessage.openAI.customEndpoint`: Enter "openai" or "perplexity" or enter a custom endpoint URL.
+- `aicommitmessage.openAI.temperature`: Controls randomness. Lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive
+- `aicommitmessage.openAI.maxTokens`: The maximum number of tokens to generate. Requests can use up to 2048 tokens shared between prompt and completion
+- `aicommitmessage.openAI.language`: The language of the prompt. The default language is English (en).
 
 ## 📝 Release Notes
 

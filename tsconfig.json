@@ -14,8 +14,8 @@
 			"@utils/*": [
 				"utils/*"
 			],
-			"@gptcommit/*": [
-				"gptcommit/*"
+			"@aicommitmessage/*": [
+				"aicommitmessage/*"
 			],
 			"@commands": [
 				"commands"
