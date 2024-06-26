@@ -18,6 +18,22 @@ function createInitMessagesPrompt(language: string): ChatCompletionMessageParam[
       role: 'system',
       content: `You are to act as the author of a commit message in git. Your task is to generate commit messages according to Conventional Commits 1.0.0 rules. I'll send you the outputs of the 'git diff' command, and you convert it into the one commit message. Do not prefix the commit with anything and use the present tense. You should never add a description to a commit, only commit message.`,
     },
+    {
+      role: 'user',
+      content: `The Conventional Commits specification is a lightweight convention on top of commit messages.
+      It provides an easy set of rules for creating an explicit commit history; 
+      which makes it easier to write automated tools on top of. 
+      This convention dovetails with SemVer, 
+      by describing the features, fixes, and breaking changes made in commit messages.
+      The commit message must consist of multiple files as one message, as follows.
+      <type>[optional scope]: <description>
+      [optional body]`,
+    },
+    {
+      role: 'assistant',
+      content: `feat: allow provided config object to extend other configs
+      BREAKING CHANGE: 'extends' key in config file is now used for extending other config files`,
+    },
   ];
 };
 
