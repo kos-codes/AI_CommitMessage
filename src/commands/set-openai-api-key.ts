@@ -72,7 +72,8 @@ export async function setOpenaiApiKey() {
     "gpt-3.5-turbo-instruct",
     "gpt-4-turbo-2024-04-09",
     "gpt-4-turbo",
-    "gpt-4"
+    "gpt-4",
+    "o3-mini"
   ];
 
   do {
