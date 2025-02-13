@@ -2,18 +2,18 @@
   "name": "ai-commit-message",
   "displayName": "Ai Commit Message",
   "description": "VS Code extension which helps to generate AI commit messages using ChatGPT",
-  "version": "1.1.6",
-  "homepage": "https://github.com/ComBba/AI_CommitMessage#readme",
-  "bugs": "https://github.com/ComBba/AI_CommitMessage/issues",
+  "version": "1.1.7",
+  "homepage": "https://github.com/kos-codes/AI_CommitMessage#readme",
+  "bugs": "https://github.com/kos-codes/AI_CommitMessage/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ComBba/AI_CommitMessage"
+    "url": "https://github.com/kos-codes/AI_CommitMessage"
   },
   "license": "MIT",
   "engines": {
     "vscode": "^1.76.0"
   },
-  "publisher": "2weeksco",
+  "publisher": "kos-codes",
   "categories": [
     "Other",
     "SCM Providers"
